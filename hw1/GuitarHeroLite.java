@@ -13,6 +13,7 @@ public class GuitarHeroLite {
             /* check if the user has typed a key; if so, process it */
             if (StdDraw.hasNextKeyTyped()) {
                 char key = StdDraw.nextKeyTyped();
+//                char key = 'a';
                 if (key == 'a') {
                     stringA.pluck();
                 } else if (key == 'c') {

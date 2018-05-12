@@ -1,28 +1,25 @@
 public class ArrayDeque<T> implements Deque<T> {
     /** using array to store data */
     private T[] arr;
-    private int size, nextFirst, nextLast;
+    private int size, nextFirst, nextLast, n;
 
     public ArrayDeque(){
         arr = (T[]) new Object[8];
         size = 8;
         nextLast = 0;
         nextFirst = 7;
+        n = 0;
     }
 
     /** update the array to save memory */
     private void sizeUpdate(){
-        int num, newSize;
-        if (nextLast >= nextFirst)
-            num = nextLast - nextFirst - 1;
-        else
-            num = arr.length - 1 - nextFirst + nextLast;
+        int newSize, num = (nextLast - nextFirst - 1 + size) % size;
 
         if (num <= 2)
             newSize = 8;
-        else if (num <= 0.25 * arr.length)
+        else if (num <= 0.25 * size)
             newSize = 4 * num;
-        else if (num == arr.length)
+        else if (num == size)
             newSize = 2 * num;
         else
             return;
@@ -31,8 +28,8 @@ public class ArrayDeque<T> implements Deque<T> {
         if (nextLast >= nextFirst)
             System.arraycopy(arr, nextFirst + 1, newArr, 0, num);
         else {
-            System.arraycopy(arr, nextFirst + 1, newArr, 0, arr.length - 1 - nextFirst);
-            System.arraycopy(arr, 0, newArr, arr.length - 1 - nextFirst, nextLast);
+            System.arraycopy(arr, nextFirst + 1, newArr, 0, size - 1 - nextFirst);
+            System.arraycopy(arr, 0, newArr, size - 1 - nextFirst, nextLast);
         }
         this.arr = newArr;
         nextLast = num;
@@ -40,37 +37,25 @@ public class ArrayDeque<T> implements Deque<T> {
         size = newSize;
     }
 
-    private void convertAddNextLast(){
-        if (nextLast != size - 1)
-            nextLast++;
-        else
-            nextLast = 0;
-    }
-
-    private void convertAddNextFirst(){
-        if (nextFirst != 0)
-            nextFirst--;
-        else
-            nextFirst = size - 1;
-    }
-
     @Override
     public void addFirst(T item){
         arr[nextFirst] = item;
-        convertAddNextFirst();
+        nextFirst = (nextFirst + size - 1) % size;
         this.sizeUpdate();
+        n++;
     }
 
     @Override
     public void addLast(T item){
         arr[nextLast] = item;
-        convertAddNextLast();
+        nextLast = (nextLast + 1) % size;
         this.sizeUpdate();
+        n++;
     }
 
     @Override
     public boolean isEmpty(){
-        if (nextLast - nextFirst == 1 || nextLast == 0 && nextFirst == size - 1)
+        if (n == 0)
             return true;
         return false;
     }
@@ -82,68 +67,42 @@ public class ArrayDeque<T> implements Deque<T> {
 
     @Override
     public void printDeque(){
-        if (isEmpty()) {
-            System.out.println();
-            return;
-        }
-        int count;
-        if (nextFirst == size - 1)
-            count = 0;
-        else
-            count = nextFirst + 1;
-        while (count != nextLast - 1){
+        int count = (nextFirst + 1) % size;
+        while (count != nextLast){
             System.out.print(arr[count] + " ");
-            count++;
-            if (count == size)
-                count = 0;
+            count = (count + 1) % size;
         }
-        System.out.println(arr[count]);
+        System.out.println();
     }
 
     @Override
     public T removeFirst(){
-        if (this.size == 0)
+        if (this.n == 0)
             return null;
-        T result;
-        int ind;
-        if (nextFirst == size - 1)
-            ind = 0;
-        else
-            ind = nextFirst + 1;
-        result = arr[ind];
+        int ind = (nextFirst + 1) % size;
+        T result = arr[ind];
         arr[ind] = null;
         nextFirst = ind;
+        this.sizeUpdate();
         return result;
     }
 
     @Override
     public T removeLast(){
-        if (this.size == 0)
+        if (this.n == 0)
             return null;
-        T result;
-        int ind;
-        if (nextLast == 0)
-            ind = size - 1;
-        else
-            ind = nextLast - 1;
-        result = arr[ind];
+        int ind = (nextLast + size - 1) % size;
+        T result = arr[ind];
         arr[ind] = null;
         nextLast = ind;
+        this.sizeUpdate();
         return result;
     }
 
     @Override
     public T get(int index){
-        int count = 0, ind;
-        if (nextFirst == size - 1)
-            ind = 0;
-        else
-            ind = nextFirst + 1;
-        while (ind != nextLast){
-            if (count == index)
-                return arr[ind];
-            count++;
-        }
-        return null;
+        if (index >= size)
+            return null;
+        return arr[(nextFirst + 1 + index) % size];
     }
 }

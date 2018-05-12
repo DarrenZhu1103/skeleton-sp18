@@ -1,4 +1,4 @@
-public class LinkedListDeque<T> implements Deque<T> {
+public class LinkedListDeque<T> {
     private class LinkList{
         private T first;
         private LinkList rest, before;
@@ -57,7 +57,6 @@ public class LinkedListDeque<T> implements Deque<T> {
         this.size = 0;
     }
 
-    @Override
     public void addFirst(T item){
         this.size += 1;
         LinkList lnk = new LinkList(item, null, null);
@@ -65,7 +64,6 @@ public class LinkedListDeque<T> implements Deque<T> {
         lnk.setBeforeReverse(this.lst);
     }
 
-    @Override
     public void addLast(T item){
         this.size += 1;
         LinkList lnk = new LinkList(item, null, null);
@@ -73,19 +71,16 @@ public class LinkedListDeque<T> implements Deque<T> {
         lnk.setRestReverse(this.lst);
     }
 
-    @Override
     public boolean isEmpty(){
         if (this.size == 0)
             return true;
         return false;
     }
 
-    @Override
     public int size(){
         return this.size;
     }
 
-    @Override
     public void printDeque(){
         if (isEmpty()){
             System.out.println();
@@ -99,7 +94,6 @@ public class LinkedListDeque<T> implements Deque<T> {
         System.out.println(lnk.getFirst().toString());
     }
 
-    @Override
     public T removeFirst(){
         if (this.size == 0)
             return null;
@@ -109,7 +103,6 @@ public class LinkedListDeque<T> implements Deque<T> {
         return result;
     }
 
-    @Override
     public T removeLast(){
         if (this.size == 0)
             return null;
@@ -119,7 +112,6 @@ public class LinkedListDeque<T> implements Deque<T> {
         return result;
     }
 
-    @Override
     public T get(int index){
         LinkList lnk = this.lst.getRest();
         int i = 0;
