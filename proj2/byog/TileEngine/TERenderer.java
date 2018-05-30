@@ -95,6 +95,8 @@ public class TERenderer {
                 }
                 world[x][y].draw(x + xOffset, y + yOffset);
             }
+//            StdDraw.pause(500);
+//            StdDraw.show();
         }
         StdDraw.show();
     }
