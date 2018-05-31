@@ -175,7 +175,12 @@ public class Game {
                     lastMap = map;
                     return;
                 }
-
+                switch (key){
+                    case 'a': map.move(-1, 0); break;
+                    case 's': map.move(0, -1); break;
+                    case 'd': map.move(1, 0); break;
+                    case 'w': map.move(0, 1); break;
+                }
                 lastKey = key;
             }
         }

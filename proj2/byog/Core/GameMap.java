@@ -120,8 +120,6 @@ class GameMap {
             last = temp;
         }
         int x = point.x, y = point.y;
-        tiles[x][y] = Tileset.UNLOCKED_DOOR;
-        tiles[last.x][last.y] = Tileset.UNLOCKED_DOOR;
 //        System.out.println(TETile.toString(tiles));
         while (x < last.x){
             tiles[x][y] = Tileset.FLOOR;
@@ -162,11 +160,22 @@ class GameMap {
 
     private LinkedList<Position> getDoor(Area p){
         LinkedList<Position> door = new LinkedList<>();
-        door.add(new Position(p.x - 1, p.y + p.height / 2));
-        door.add(new Position(p.x + p.width / 2, p.y - 1));
-        door.add(new Position(p.x + p.width / 2, p.y + p.height));
-        door.add(new Position(p.x + p.width, p.y + p.height / 2));
+        addOneDoor(new Position(p.x - 1, p.y + p.height / 2), door);
+        addOneDoor(new Position(p.x + p.width / 2, p.y - 1), door);
+        addOneDoor(new Position(p.x + p.width / 2, p.y + p.height), door);
+        addOneDoor(new Position(p.x + p.width, p.y + p.height / 2), door);
         return door;
+    }
+
+    private void addOneDoor(Position p, LinkedList<Position> door){
+        if (validDoor(p))
+            door.add(p);
+    }
+
+    private boolean validDoor(Position p){
+        if (p.x > 0 && p.x < WIDTH - 1 && p.y > 0 && p.y < HEIGHT - 1)
+            return true;
+        return false;
     }
 
     private void addWall(){
@@ -190,8 +199,8 @@ class GameMap {
 
     private void addGoldenDoor(){
         while (true){
-            int x = randomNumGenerator.nextInt(WIDTH);
-            int y = randomNumGenerator.nextInt(HEIGHT);
+            int x = randomNumGenerator.nextInt(WIDTH - 4) + 2;
+            int y = randomNumGenerator.nextInt(HEIGHT - 4) + 2;
             double d0 = randomNumGenerator.nextDouble();
             int[] arr = {-1, 1};
             int d = arr[randomNumGenerator.nextInt(2)];
