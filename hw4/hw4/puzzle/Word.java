@@ -10,6 +10,8 @@ public class Word implements WorldState {
     private static final String WORDFILE = "input/words10000.txt";
     private final String word;
     private final String goal;
+    private int distance;
+    private boolean distanceGet;
 
     /**
      * Reads the wordfile specified by the wordfile variable.
@@ -84,7 +86,11 @@ public class Word implements WorldState {
 
     @Override
     public int estimatedDistanceToGoal() {
-        return editDistance(this.word, goal);
+        if (!distanceGet) {
+            distance = editDistance(this.word, goal);
+            distanceGet = true;
+        }
+        return distance;
     }
 
     @Override
