@@ -1,5 +1,4 @@
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,7 +24,82 @@ public class Router {
      */
     public static List<Long> shortestPath(GraphDB g, double stlon, double stlat,
                                           double destlon, double destlat) {
-        return null; // FIXME
+        Map<Long, Point> best = new HashMap<>();
+        Queue<Point> queue = new PriorityQueue<>();
+        Set<Long> marked = new HashSet<>();
+        LinkedList<Long> path = new LinkedList<>();
+
+        long start = g.closest(stlon, stlat);
+        long end = g.closest(destlon, destlat);
+
+        for (GraphDB.Node i : g.graph.values()){
+            best.put(i.id, new Point(i.id, end, -1, Double.MAX_VALUE, g));
+        }
+
+        best.get(start).parent = start;
+        best.get(start).length = 0;
+        queue.add(best.get(start).copy());
+        Long p = queue.remove().id;
+        marked.add(p);
+
+        while (p != end){
+            for (long v : g.adjacent(p)){
+                double length = best.get(p).length + g.distance(p, v);
+                Point vp = best.get(v);
+                if (length < vp.length){
+                    vp.length = length;
+                    vp.parent = p;
+                    queue.add(vp.copy());
+                }
+            }
+            do {
+                p = queue.remove().id;
+            } while (marked.contains(p));
+            marked.add(p);
+        }
+
+        Point e = best.get(end);
+        while (e.parent != e.id) {
+            path.addFirst(e.id);
+            e = best.get(e.parent);
+        }
+        path.addFirst(start);
+
+        return path; // FIXME
+    }
+
+    private static class Point implements Comparable<Point> {
+        private final long id;
+        private final long end;
+        private double length;
+        private long parent;
+        private final double h;
+        private final GraphDB g;
+
+
+        Point(long id, long end, long parent, double length, GraphDB g){
+            this.id = id;
+            this.end = end;
+            this.parent = parent;
+            this.length = length;
+            this.h = g.distance(id, end);
+            this.g = g;
+        }
+
+        @Override
+        public int compareTo(Point other) {
+            double m = length + h - other.length - other.h;
+            if (Math.abs(m) < 0.000000001)
+                return 0;
+            if (m > 0)
+                return 1;
+            else
+                return -1;
+        }
+
+        public Point copy(){
+            return new Point(id, end, parent, length, g);
+        }
     }
 
     /**
@@ -37,6 +111,7 @@ public class Router {
      * route.
      */
     public static List<NavigationDirection> routeDirections(GraphDB g, List<Long> route) {
+
         return null; // FIXME
     }
 
