@@ -34,8 +34,13 @@ public class MergeSort {
     /** Returns a queue of queues that each contain one item from items. */
     private static <Item extends Comparable> Queue<Queue<Item>>
             makeSingleItemQueues(Queue<Item> items) {
-        // Your code here!
-        return null;
+        Queue<Queue<Item>> result = new Queue<>();
+        while (!items.isEmpty()){
+            Queue<Item> item = new Queue<>();
+            item.enqueue(items.dequeue());
+            result.enqueue(item);
+        }
+        return result;
     }
 
     /**
@@ -53,14 +58,29 @@ public class MergeSort {
      */
     private static <Item extends Comparable> Queue<Item> mergeSortedQueues(
             Queue<Item> q1, Queue<Item> q2) {
-        // Your code here!
-        return null;
+        Queue<Item> result = new Queue<>();
+        while (!(q1.isEmpty() && q2.isEmpty()))
+            result.enqueue(getMin(q1, q2));
+        return result;
     }
 
     /** Returns a Queue that contains the given items sorted from least to greatest. */
     public static <Item extends Comparable> Queue<Item> mergeSort(
             Queue<Item> items) {
-        // Your code here!
-        return items;
+        Queue<Queue<Item>> itemQueue = makeSingleItemQueues(items);
+        while (itemQueue.size() > 1){
+            itemQueue.enqueue(mergeSortedQueues(itemQueue.dequeue(), itemQueue.dequeue()));
+        }
+        return itemQueue.dequeue();
+    }
+
+    public static void main(String[] args){
+        Queue<String> raw = new Queue<>();
+        raw.enqueue("Arsenal");
+        raw.enqueue("Liverpool");
+        raw.enqueue("Chelsea");
+        raw.enqueue("Manchester");
+        System.out.println(raw);
+        System.out.println(mergeSort(raw));
     }
 }
