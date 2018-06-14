@@ -47,6 +47,7 @@ public class Clorus extends Creature {
             Direction moveDir = HugLifeUtils.randomEntry(empties);
             return new Action(Action.ActionType.REPLICATE, moveDir);
         }
-        return new Action(Action.ActionType.STAY);
+        Direction moveDir = HugLifeUtils.randomEntry(empties);
+        return new Action(Action.ActionType.MOVE, moveDir);
     }
 }
